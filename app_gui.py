@@ -2,9 +2,11 @@ from tkinter import *
 from tkinter import ttk, messagebox
 #from PIL import Image as I, ImageTk
 #Instead convert images into .ico and use iconbitmap method!
-global RUNNING
-RUNNING = False
 
+
+
+
+RUNNING = False
 def SHUTDOWN():pass
 def UPDATION(): pass
 def GET_DEVIATIONS(): pass
@@ -67,25 +69,21 @@ def App():
     root.grid_rowconfigure(0, weight=1, minsize=1000)
 
     global Greet
-    Greet = StringVar()
-
     global Shutdown
-    Shutdown = StringVar()
-
     global Date
-    Date = StringVar()
-
     global START_HOUR
-    START_HOUR = StringVar()
-
     global START_MINUTE
-    START_MINUTE = StringVar()
-
     global END_HOUR
-    END_HOUR = StringVar()
-
     global END_MINUTE
+
+    Greet = StringVar()
+    Shutdown = StringVar()
+    Date = StringVar()
+    START_HOUR = StringVar()
+    START_MINUTE = StringVar()
+    END_HOUR = StringVar()
     END_MINUTE = StringVar()
+    
 
     STYLE()
     
@@ -120,8 +118,8 @@ def App():
         details = ttk.Label(detailframe, text='Details')
         details.grid(row=0, column=0, columnspan=7, rowspan=1, sticky='nwes')
         
-        today = ttk.Checkbutton(detailframe, text='Today', onvalue='1', variable=Date)
-        tomorrow = ttk.Checkbutton(detailframe, text='Tomorrow', onvalue='', variable=Date)
+        today = ttk.Checkbutton(detailframe, text='Today', onvalue='1', variable=Date, command=None)
+        tomorrow = ttk.Checkbutton(detailframe, text='Tomorrow', onvalue='', variable=Date, command=None)
         today.grid(row=2, column=1, columnspan=2, rowspan=1, sticky='nwes')
         tomorrow.grid(row=2, column=4, columnspan=2, rowspan=1, sticky='nwes')
 
@@ -211,12 +209,8 @@ def App():
 
         
 if __name__=='__main__':
-    app = App()
-    global Greet
+    app = App()    
     Greet.set('Helloooooooo00000000000000000000000000000000oooooo User!')
-    global Date
-    Date.set('bharath')
-    
     app.mainloop()
     
     
