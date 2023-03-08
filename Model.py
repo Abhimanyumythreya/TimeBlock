@@ -1,66 +1,63 @@
 from datetime import datetime, date, time, timedelta
-from csv import DictWriter, DictReader
+from csv import DictWriter, DictReader, writer, reader
 import os
 
 
-class Model():
+class Model:
     Users = []
-    FieldNames = ['Date_Created', 'Date', 'Starting Time', 'Ending Time', 'Tasks', 'Metrics', 'Ideas', 'Deviations']
+    Running = False
+    Shutdown = False
+    today = datetime.now()
+    Headers = ['Date Created', 'Date', 'Starting Time', 'Ending Time', 'Tasks', 'Ideas', 'Metrics', 'Deviations']
 
-    def __init__(self, Running=False, Date_view=0, user='Bharath'):
-        self.Running = Running
-        self.Date = self.GET_DATE(Date_view)
-        self.StartingTime = self.GET_START(self.Date)
-        self.EndingTime = GET_END(self.StartingTime)
+    def __init__(self, user):
         self.user = user
-        if self.user not in Model.Users:
-            Model.Users.append(self.user)
-            self.file_name = f'{self.user}\'s Statistics.csv'
+        self.Date = self.set_Date()
+        self.StartTime = None
+        self.EndTime = None    
 
-    def GET_DATE(self, Date_View):
-        if Date_View == 0:return datetime.now().date() + timedelta(1)
-        return datetime.now().date()
+    def set_Date(self, Date_View=True):
+        if Date_View: return Model.today.date()
+        return Model.today.date() + timedelta(1)
+    
+    def min_StartTime(self):
+        if self.Date == Model.today.date():
+            plus_1 = (Model.today + timedelta(minutes=60)).time()
+            min_start_time = time(plus_1.hour, plus_1.minute)
+            return min_start_time
+        return time(0, 0)
 
-    def get_time(moment): return int(input(f'{moment} Hour: ')), int(input(f'{moment} Minute: '))
+    
 
-    def GET_START(self):
-        t_now = datetime.now()
-        today = date.today()
-        if self.Date == today:
-            print(f'You can choose from {(t_now + timedelta(minutes=60)).time()}')
-            t_start = time(*Model.get_time('Starting'))
-            if datetime.combine(today, t_start) - t_now >= timedelta(minutes=60):
-                pass
-            else:
-                return self.GET_START(self)
-        else:
-            print('You can choose to schedule from midnight')
-            t_start = time(*Model.get_time('Starting'))
-        return t_start
+    def set_Time(self, hour, minute):        
+        t = time(hour, minute)
+        return t       
 
-    def SaveData(self):
-        if not os.path.exists(self.file_name):
-            with open(self.file_name, 'x') as Stats:
-                #print('Creating a database for {}'.format(self.user))
-                writer = DictWriter(Stats, fieldnames=Model.FieldNames, restval=None, )
+    def SAVE(self): 
+        Model.Running = True
+        if not os.path.exists(f'{self.user}\'s Statistics.csv'):
+            with open(f'{self.user}\'s Statistics.csv', 'a') as Stat:
+                writer = DictWriter(Stat, fieldnames=Model.Headers, restval=None)
                 writer.writeheader()
-        with open(self.file_name, 'a') as Stats:
-            writer = DictWriter(Stats, fieldnames=Model.FieldNames)
+            
+        with open(f'{self.user}\'s Statistics.csv', 'a') as Stat:
+            writer = DictWriter(Stat, fieldnames=Model.Headers, restval=None)
             writer.writerow({
-                'Date_Created': datetime.today().date(),
+                'Date Created':date.today(),
                 'Date': self.Date,
-                'Starting Time': self.StartingTime,
-                'Ending Time': self.EndingTime
+                'Starting Time': self.StartTime,
+                'Ending Time': self.EndTime
             })
-        self.Running = True
+            
+                    
+    def UPDATE(self): pass
+    def DESTROY(self): pass
 
 
-    def UpadteData(self):
-        pass
+    
 
 
-    def DeleteData(self): pass
-
-
-
-if __name__=='__main__': pass
+if __name__=='__main__': 
+    bharath = Model('Bharath')
+    bharath.SAVE()
+    print(bharath.today.date())
